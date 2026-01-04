@@ -1,0 +1,77 @@
+body{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container{
+    flex: 1;
+}
+
+.fa-compass{
+    color: #fe424d;
+    font-size: 1.8rem;
+}
+
+/* footer */
+.f-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 7rem;
+    padding: 0.5rem;
+    background: rgb(221, 219, 219);
+    color: #000;
+}
+
+.fa-brands{
+    margin-right: 5px;
+}
+
+.fa-brands:hover{
+    transform: scale(1.2);
+}
+
+.f-links a{
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-right: 0.5rem;
+    color: #000;
+}
+
+.f-links a:hover{
+    display: inline-block;
+    transform: scale(1.2);
+}
+
+
+/* card */
+.card-img-top{
+    height: 20rem !important;
+    width: 100% !important;
+    border-radius: 1rem;
+}
+
+.card-text{
+    margin: 0;
+}
+
+/* card effect */
+.card-img-overlay:hover{
+    background: white;
+    opacity: 0.3;
+}
+
+/* buttons */
+.edit-btn, .add-btn{
+    background-color: #fe424d !important;
+    border: none;
+    color: white;
+}
+
+.edit-btn, .add-btn:hover{
+    background-color: #fe424d !important;
+    border: none;
+    color: white;
+}

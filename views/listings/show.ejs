@@ -1,26 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Travio</title>
-</head>
+<% layout("/layouts/boilerplate") %>
 <body>
-    <h1>Listing details.</h1>
-    <ul>
-        <li><%= listing.title %></li>
-        <li><%= listing.description %></li>
-        <li> &#8377;<%= listing.price.toLocaleString("en-IN") %></li>
-        <li><%= listing.location %></li>
-        <li><%= listing.country %></li>
-    </ul>
-
-    <form action="/listings/<%= listing._id %>/edit">
-        <button>Edit this listing</button>
-    </form>
-
-    <form action="/listings/<%= listing._id %>?_method=DELETE" method="post">
-        <button>Delete</button>
-    </form>
+  <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1">
+    <% for(list of listings) { %>
+    <div class="col mt-3">
+      <a class="text-decoration-none" href="/listings/<%= list._id %>">
+        <div class="card mb-3 border-0">
+            <img src=<%=list.image.url%> class="card-img-top"
+            alt="Listing_image" />
+            <div class="card-img-overlay"></div>
+          <div class="card-body">
+            <h5 class="card-title"><%= list.title %></h5>
+            <p class="card-text"><%= list.description %></p>
+            <p class="card-text">
+              <b> &#8377;<%= list.price.toLocaleString("en-IN") %>/night </b>
+            </p>
+          </div>
+        </div>
+      </a>
+    </div>
+    <% } %>
+  </div>
 </body>
-</html>

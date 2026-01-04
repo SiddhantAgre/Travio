@@ -1,39 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Travio</title>
-  </head>
-  <body>
-    <h1>Create listing</h1>
-    <form action="/listings" method="post">
-      <input type="text" name="listing[title]" placeholder="Enter your title" />
-      <br /><br />
-      <textarea
-        name="listing[description]"
-        placeholder="Enter your description"
-      ></textarea>
-      <br /><br />
-      <input
-        type="number"
-        name="listing[price]"
-        placeholder="Enter your price"
-      />
-      <br /><br />
-      <input
-        type="text"
-        name="listing[country]"
-        placeholder="Enter your country"
-      />
-      <br /><br />
-      <input
-        type="text"
-        name="listing[location]"
-        placeholder="Enter your location"
-      />
-      <br /><br />
-      <button>Add</button>
-    </form>
-  </body>
-</html>
+<% layout("layouts/boilerplate") %>
+<body>
+  <div class="row">
+    <div class="col-8 offset-2">
+      <br>
+      <form method="post" action="/listings" novalidate class="needs-validation">
+        <h2>Create a new listing</h2>
+        <div class="mb-3">
+          <label class="form-label" for="title">Title: </label>
+          <input
+            class="form-control"
+            type="text"
+            placeholder="Enter a title"
+            id="title"
+            name="listing[title]"
+            required
+            />
+            <div class="valid-feedback">Title entered!</div>
+            <div class="invalid-feedback">Please enter valid credentials</div>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Description:</label>
+          <textarea
+            type="text"
+            class="form-control"
+            placeholder="Enter description"
+            name="listing[description]"
+            id="description"
+            required
+          ></textarea>
+            <div class="valid-feedback">Description entered!</div>
+            <div class="invalid-feedback">Please enter valid credentials</div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="img">Image: </label>
+          <input
+            class="form-control"
+            type="text"
+            placeholder="Enter image link/url"
+            id="img"
+            name="listing[image]"
+            />
+            <div class="valid-feedback">Title entered!</div>
+            <div class="invalid-feedback">Please enter valid credentials</div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <label class="form-label" for="title">Price: </label>
+            <input
+              class="form-control"
+              type="text"
+              placeholder="1200"
+              id="price"
+              name="listing[price]"
+              required
+            />
+            <div class="valid-feedback">Price entered!</div>
+            <div class="invalid-feedback">Please enter valid credentials</div>
+          </div>
+
+          <div class="mb-3 col-md-8">
+            <label class="form-label" for="country">Country: </label>
+            <input
+              class="form-control"
+              type="text"
+              placeholder="India"
+              id="country"
+              name="listing[country]"
+              required
+            />
+            <div class="valid-feedback">Country entered!</div>
+            <div class="invalid-feedback">Please enter valid credentials</div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="location">Location: </label>
+          <input
+            class="form-control"
+            type="text"
+            placeholder="Mumbai, Maharashtra"
+            id="location"
+            name="listing[location]"
+            required
+          />
+            <div class="valid-feedback">Location entered!</div>
+            <div class="invalid-feedback">Please enter valid credentials</div>
+        </div>
+
+        <button class="btn add-btn">Add</button>
+        <br><br>
+      </form>
+    </div>
+  </div>
+</body>
