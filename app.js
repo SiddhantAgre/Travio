@@ -5,6 +5,10 @@ const Listing = require("./model/listing");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const path = require("path");
+const wrapAsync = require("./utils/wrapAsync");
+const ExpressError = require("./utils/ExpressError");
+const { listingSchema } = require("./ValidateSchema");
+const Review = require("./model/review");
 
 app.set("view engine", "ejs");
 
@@ -13,19 +17,24 @@ app.use(methodOverride("_method"));
 app.engine("ejs", ejsMate);
 app.use(express.static(path.join(__dirname, "/public")));
 
+function validateListing(req, res, next) {
+  let { error } = listingSchema.validate(req.body);
+  if (error) {
+    const errMsg = error.details[0].message;
+    console.log(error);
+    next(new ExpressError(400, errMsg));
+  } else {
+    next();
+  }
+}
+
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/travel");
+  await mongoose.connect("mongodb://127.0.0.1:27017/travio");
 }
 
 main().then(() => {
   console.log("Database connected!");
 });
-
-function wrapAsync(fn) {
-  return function (req, res, next) {
-    fn(req, res, next).catch(err => next(err));
-  };
-}
 
 app.get("/", (req, res) => {
   res.send("I am the root route!");
@@ -34,7 +43,7 @@ app.get("/", (req, res) => {
 // Show route
 app.get("/listings", async (req, res) => {
   const listings = await Listing.find();
-  res.render("./listings/show.ejs", { listings });
+  res.render("./listings/index.ejs", { listings });
 });
 
 //Create route
@@ -42,8 +51,10 @@ app.get("/listings/new", (req, res) => {
   res.render("./listings/new.ejs");
 });
 
+//New route
 app.post(
   "/listings",
+  validateListing,
   wrapAsync(async (req, res) => {
     const newListing = new Listing(req.body.listing);
     await newListing.save();
@@ -74,6 +85,7 @@ app.get(
 //update route
 app.put(
   "/listings/:id",
+  validateListing,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     const newListing = await Listing.findByIdAndUpdate(id, {
@@ -89,12 +101,29 @@ app.get(
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     let listing = await Listing.findById(id);
-    res.render("./listings/view.ejs", { listing });
+    res.render("./listings/show.ejs", { listing });
   })
 );
 
+//review route
+app.post("/listings/:id/review", async (req, res, next) => {
+  let listing = await Listing.findById(req.params.id);
+  let newReview = new Review(req.body.review);
+  listing.review.push(newReview);
+
+  await newReview.save();
+  await listing.save();
+
+  console.log("Review added!");
+
+  res.redirect(`/listings/${req.params.id}`);
+});
+
+//middlewares
 app.use((err, req, res, next) => {
-  res.send("Something went wrong!");
+  let { status = 500, message = "Something went wrong" } = err;
+  console.log(err);
+  res.status(status).render("./Error.ejs", { err });
 });
 
 app.listen("8080", () => {

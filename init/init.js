@@ -3,7 +3,7 @@ const initData = require("./data")
 const Listing = require("../model/listing");
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/travel");
+  await mongoose.connect("mongodb://127.0.0.1:27017/travio");
 }
 
 main().then(() => {

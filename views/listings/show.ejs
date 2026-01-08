@@ -1,23 +1,71 @@
-<% layout("/layouts/boilerplate") %>
+<% layout("./layouts/boilerplate") -%>
 <body>
-  <div class="row row-cols-lg-3 row-cols-md-3 row-cols-sm-1">
-    <% for(list of listings) { %>
-    <div class="col mt-3">
-      <a class="text-decoration-none" href="/listings/<%= list._id %>">
-        <div class="card mb-3 border-0">
-            <img src=<%=list.image.url%> class="card-img-top"
-            alt="Listing_image" />
-            <div class="card-img-overlay"></div>
-          <div class="card-body">
-            <h5 class="card-title"><%= list.title %></h5>
-            <p class="card-text"><%= list.description %></p>
-            <p class="card-text">
-              <b> &#8377;<%= list.price.toLocaleString("en-IN") %>/night </b>
-            </p>
-          </div>
+  <div class="row">
+    <div class="col-8 offset-2">
+      <h1><%= listing.title %></h1>
+      <div class="card mb-3 border-0">
+        <img src="<%" ="listing.image.url%" /> class="card-img-top"
+        alt="Listing_image" />
+        <div class="card-body">
+          <p class="card-text"><%= listing.description %></p>
+          <p class="card-text">
+            <b> &#8377;<%= listing.price.toLocaleString("en-IN") %>/night </b>
+          </p>
         </div>
-      </a>
+      </div>
+      <div class="row">
+        <form
+          method="get"
+          action="/listings/<%= listing._id %>/edit"
+          class="col-1 mb-3"
+        >
+          <button class="btn btn-danger edit-btn">Edit</button>
+        </form>
+
+        <form
+          action="/listings/<%=listing._id%>?_method=DELETE"
+          method="post"
+          class="col-4 mb-3"
+        >
+          <button class="btn btn-dark del-btn">Delete</button>
+        </form>
+        <hr />
+        <form
+          action="/listings/<%=listing._id%>/review"
+          method="post"
+          novalidate
+          class="mb-3 needs-validation"
+        >
+          <h3>Add Review</h3>
+          <div>
+            <label for="rating" class="form-label">Rating: </label>
+            <input
+              type="range"
+              min="1"
+              max="5"
+              name="review[rating]"
+              id="rating"
+              class="form-range"
+            />
+          </div>
+
+          <div>
+            <label for="comment" class="form-label">Comment: </label>
+            <textarea
+              name="review[comment]"
+              id="comment"
+              class="form-control"
+              cols="30"
+              rows="5"
+              required
+            ></textarea>
+            <div class="valid-feedback">comment recieved</div>
+            <div class="invalid-feedback">comment needed</div>
+          </div>
+
+          <button class="btn btn-outline-dark mt-3">Post</button>
+        </form>
+      </div>
     </div>
-    <% } %>
   </div>
 </body>
