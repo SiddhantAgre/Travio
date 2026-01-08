@@ -4,7 +4,7 @@
     <div class="col-8 offset-2">
       <h1><%= listing.title %></h1>
       <div class="card mb-3 border-0">
-        <img src="<%" ="listing.image.url%" /> class="card-img-top"
+        <img src="<%=listing.image.url%>" class="card-img-top"
         alt="Listing_image" />
         <div class="card-body">
           <p class="card-text"><%= listing.description %></p>
@@ -59,8 +59,8 @@
               rows="5"
               required
             ></textarea>
-            <div class="valid-feedback">comment recieved</div>
-            <div class="invalid-feedback">comment needed</div>
+            <div class="valid-feedback">coment recieved</div>
+            <div class="invalid-feedback">plz. add some comment</div>
           </div>
 
           <button class="btn btn-outline-dark mt-3">Post</button>

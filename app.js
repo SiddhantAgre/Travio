@@ -7,7 +7,7 @@ const ejsMate = require("ejs-mate");
 const path = require("path");
 const wrapAsync = require("./utils/wrapAsync");
 const ExpressError = require("./utils/ExpressError");
-const { listingSchema } = require("./ValidateSchema");
+const { listingSchema, reviewSchema } = require("./ValidateSchema");
 const Review = require("./model/review");
 
 app.set("view engine", "ejs");
@@ -22,6 +22,17 @@ function validateListing(req, res, next) {
   if (error) {
     const errMsg = error.details[0].message;
     console.log(error);
+    next(new ExpressError(400, errMsg));
+  } else {
+    next();
+  }
+}
+
+function validateReview(req, res, next) {
+  let { error } = reviewSchema.validate(req.body);
+  if (error) {
+    const errMsg = error.details[0].message;
+    console.log(errMsg);
     next(new ExpressError(400, errMsg));
   } else {
     next();
@@ -106,18 +117,22 @@ app.get(
 );
 
 //review route
-app.post("/listings/:id/review", async (req, res, next) => {
-  let listing = await Listing.findById(req.params.id);
-  let newReview = new Review(req.body.review);
-  listing.review.push(newReview);
+app.post(
+  "/listings/:id/review",
+  validateReview,
+  wrapAsync(async (req, res, next) => {
+    let listing = await Listing.findById(req.params.id);
+    let newReview = new Review(req.body.review);
+    listing.review.push(newReview);
 
-  await newReview.save();
-  await listing.save();
+    await newReview.save();
+    await listing.save();
 
-  console.log("Review added!");
+    console.log("Review added!");
 
-  res.redirect(`/listings/${req.params.id}`);
-});
+    res.redirect(`/listings/${req.params.id}`);
+  })
+);
 
 //middlewares
 app.use((err, req, res, next) => {
