@@ -65,8 +65,12 @@ app.get("/listings/new", (req, res) => {
 //New route
 app.post(
   "/listings",
-  validateListing,
   wrapAsync(async (req, res) => {
+    (req.body.listing.image = {
+      url: req.body.listing.image,
+      filename: "listingimage",
+    }),
+      validateListing;
     const newListing = new Listing(req.body.listing);
     await newListing.save();
     res.redirect("/listings");
@@ -111,11 +115,12 @@ app.get(
   "/listings/:id",
   wrapAsync(async (req, res) => {
     let { id } = req.params;
-    let listing = await Listing.findById(id);
+    let listing = await Listing.findById(id).populate("review");
     res.render("./listings/show.ejs", { listing });
   })
 );
 
+//reviews
 //review route
 app.post(
   "/listings/:id/review",
