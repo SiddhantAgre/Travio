@@ -36,7 +36,7 @@
 
 
 
-        //Reviews
+        <% /* Reviews */ %>
         <form
           action="/listings/<%=listing._id%>/review"
           method="post"
@@ -79,14 +79,14 @@
 
         <ul>
           <div class="row">
-            <% for(review of listing.review) { %>
+            <% for(let review of listing.review) { %>
             <div class="card col-5 m-2">
               <h4 class="card-text">Siddhant Agre</h4>
               <p class="card-text"><%= review.comment %></p>
               <p class="card-text mb-2"><%= review.rating %> stars</p>
 
-              <form action="" class="mb-2">
-                <button class="btn btn-sm btn-dark">Delete</button>
+              <form action="/listings/<%= listing._id %>/review/<%= review._id %>?_method=DELETE" class="mb-2" method="post">
+                <button class="btn btn-dark btn-sm">Delete</button>
               </form>
             </div>
             <% } %>

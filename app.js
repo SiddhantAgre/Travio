@@ -125,7 +125,7 @@ app.get(
 app.post(
   "/listings/:id/review",
   validateReview,
-  wrapAsync(async (req, res, next) => {
+  wrapAsync(async (req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
     listing.review.push(newReview);
@@ -139,6 +139,13 @@ app.post(
   })
 );
 
+//delete review route
+app.delete("/listings/:id/review/:reviewId", wrapAsync(async (req, res) => {
+  let {id, reviewId} = req.params;
+  await Listing.findByIdAndUpdate(id, {$pull: {review: reviewId}})
+  await Review.findByIdAndDelete(reviewId);
+  res.redirect(`/listings/${id}`);
+}))
 //middlewares
 app.use((err, req, res, next) => {
   let { status = 500, message = "Something went wrong" } = err;
