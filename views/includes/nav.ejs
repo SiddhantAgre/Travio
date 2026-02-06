@@ -9,6 +9,16 @@
         <a class="nav-link fs-5" href="/listings">Home</a>
         <a class="nav-link fs-5" href="/listings/new">Add new listing</a>
       </div>
+      <div class="navbar-nav ms-auto">
+        <% if(!currUser){ %>
+          <a class="nav-link fs-5" href="/signup">Signup</a>
+          <a class="nav-link fs-5" href="/login">login</a>
+          <%} %>
+
+          <% if(currUser) { %>
+            <a class="nav-link fs-5" href="/logout">logout</a>
+          <%}%>
+      </div>
     </div>
   </div>
 </nav>
