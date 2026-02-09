@@ -11,6 +11,7 @@ main().then(() => {
 });
 
 async function demoData(){
+    await Listing.deleteMany({});
     await Listing.insertMany(initData.data);
 }
 
