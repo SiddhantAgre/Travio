@@ -2,20 +2,8 @@ const express = require("express");
 const Listing = require("../model/listing");
 const router = express.Router();
 const wrapAsync = require("../utils/wrapAsync");
-const { listingSchema } = require("../ValidateSchema");
-const ExpressError = require("../utils/ExpressError");
-const {isLoggedIn} = require("../Middleware");
-
-function validateListing(req, res, next) {
-  let { error } = listingSchema.validate(req.body);
-  if (error) {
-    const errMsg = error.details[0].message;
-    console.log(error);
-    next(new ExpressError(400, errMsg));
-  } else {
-    next();
-  }
-}
+const { isLoggedIn, isOwner, validateListing } = require("../Middleware");
+const path = require("path");
 
 // Show route
 router.get("/", async (req, res) => {
@@ -39,6 +27,7 @@ router.post(
       validateListing);
     req.flash("success", "listing added!");
     const newListing = new Listing(req.body.listing);
+    newListing.owner = req.user;
     await newListing.save();
     res.redirect("/listings");
   }),
@@ -47,7 +36,8 @@ router.post(
 //Delete route
 router.delete(
   "/:id",
-   isLoggedIn,
+  isLoggedIn,
+  isOwner,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     await Listing.findByIdAndDelete(id);
@@ -59,7 +49,8 @@ router.delete(
 //edit route
 router.get(
   "/:id/edit",
-   isLoggedIn,
+  isLoggedIn,
+  isOwner,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     let listing = await Listing.findById(id);
@@ -74,7 +65,8 @@ router.get(
 //update route
 router.put(
   "/:id",
-   isLoggedIn,
+  isLoggedIn,
+  isOwner,
   validateListing,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
@@ -91,7 +83,10 @@ router.get(
   "/:id",
   wrapAsync(async (req, res) => {
     let { id } = req.params;
-    let listing = await Listing.findById(id).populate("review");
+    let listing = await Listing.findById(id).populate({
+      path: "review",
+      populate: { path: "author" },
+    });
     if (!listing) {
       req.flash("error", "The listing you are looking for does not exist!");
       return res.redirect("/listings");

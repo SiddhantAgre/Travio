@@ -10,6 +10,7 @@
           alt="Listing_image"
         />
         <div class="card-body">
+          Created by - <i><%= listing.owner.username %></i>
           <p class="card-text"><%= listing.description %></p>
           <p class="card-text">
             <b> &#8377;<%= listing.price.toLocaleString("en-IN") %>/night </b>
@@ -17,26 +18,29 @@
         </div>
       </div>
       <div class="row">
-        <form
+
+        <% if(currUser && currUser._id.equals(listing.owner._id)){ %>
+          <form
           method="get"
           action="/listings/<%= listing._id %>/edit"
           class="col-1 mb-3"
-        >
+          >
           <button class="btn btn-danger edit-btn">Edit</button>
-        </form>
-
-        <form
+          </form>
+          
+          <form
           action="/listings/<%=listing._id%>?_method=DELETE"
           method="post"
           class="col-4 mb-3"
-        >
+          >
           <button class="btn btn-dark del-btn">Delete</button>
-        </form>
-        <hr />
+          </form>
+        <% } %>
 
 
 
         <% /* Reviews */ %>
+        <% if(currUser){ %>
         <form
           action="/listings/<%=listing._id%>/review"
           method="post"
@@ -72,6 +76,7 @@
 
           <button class="btn btn-outline-dark mt-3">Post</button>
         </form>
+        <% } %>
 
         <hr />
 
@@ -81,7 +86,7 @@
           <div class="row">
             <% for(let review of listing.review) { %>
             <div class="card col-5 m-2">
-              <h4 class="card-text">Siddhant Agre</h4>
+              <h4 class="card-text">@<%= review.author ? review.author.username : "Anonymous" %> </h4>
               <p class="card-text"><%= review.comment %></p>
               <p class="card-text mb-2"><%= review.rating %> stars</p>
 

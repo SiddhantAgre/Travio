@@ -2,28 +2,18 @@ const express = require("express");
 const router = express.Router();
 const Review = require("../model/review");
 const wrapAsync = require("../utils/wrapAsync");
-const ExpressError = require("../utils/ExpressError");
 const Listing = require("../model/listing");
-const {reviewSchema} = require("../ValidateSchema");
+const {validateReview, isLoggedIn} = require("../Middleware");
 
-function validateReview(req, res, next) {
-  let { error } = reviewSchema.validate(req.body);
-  if (error) {
-    const errMsg = error.details[0].message;
-    console.log(errMsg);
-    next(new ExpressError(400, errMsg));
-  } else {
-    next();
-  }
-}
-
-//review route
+//add review route
 router.post(
   "/:id/review",
+  isLoggedIn,
   validateReview,
   wrapAsync(async (req, res) => {
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
+    newReview.author = res.locals.currUser._id;
     listing.review.push(newReview);
 
     await newReview.save();
