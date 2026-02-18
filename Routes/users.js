@@ -4,47 +4,46 @@ const User = require("../model/user");
 const passport = require("passport");
 const { savedUrl } = require("../Middleware");
 
-//signup
-router.get("/signup", (req, res) => {
-  res.render("./users/signup.ejs");
-});
+router
+  .route("/signup")
+  .get((req, res) => {
+    res.render("./users/signup.ejs");
+  })
+  .post(async (req, res) => {
+    try {
+      let { username, email, password } = req.body;
+      let newUser = new User({ email, username });
+      await User.register(newUser, password);
+      req.login(newUser, (err) => {
+        if (err) {
+          return next(err);
+        }
+        req.flash("success", "Welcome to Travio!");
+        res.redirect("/listings");
+      });
+    } catch (e) {
+      req.flash("error", e.message);
+      res.redirect("/signup");
+    }
+  });
 
-router.post("/signup", async (req, res) => {
-  try {
-    let { username, email, password } = req.body;
-    let newUser = new User({ email, username });
-    await User.register(newUser, password);
-    req.login(newUser, (err) => {
-      if (err) {
-        return next(err);
-      }
-      req.flash("success", "Welcome to Travio!");
-      res.redirect("/listings");
-    });
-  } catch (e) {
-    req.flash("error", e.message);
-    res.redirect("/signup");
-  }
-});
-
-//login
-router.get("/login", (req, res) => {
-  res.render("./users/login.ejs");
-});
-
-router.post(
-  "/login",
-  savedUrl,
-  passport.authenticate("local", {
-    failureRedirect: "/login",
-    failureFlash: true,
-  }),
-  (req, res) => {
-    req.flash("success", "Welcome back to Travio");
-    let url = res.locals.redirectUrl || "/listings";
-    res.redirect(url);
-  },
-);
+router
+  .route("/login")
+  .get((req, res) => {
+    res.render("./users/login.ejs");
+  })
+  .post(
+    savedUrl,
+    passport.authenticate("local", {
+      failureRedirect: "/login",
+      failureFlash: true,
+    }),
+    (req, res) => {
+      req.flash("success", "Welcome back to Travio");
+      let url = res.locals.redirectUrl || "/listings";
+      res.redirect(url);
+    },
+  );
 
 // logout
 router.get("/logout", (req, res, next) => {
